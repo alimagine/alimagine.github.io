@@ -1,1 +1,375 @@
-<h1>ALIMAGINE GAME STUDIO</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALIMAGINE | Next-Gen Tactical Gaming</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;400;800&family=Outfit:wght@100;400;900&display=swap');
+
+        :root {
+            --accent: #00f2ff;
+            --bg-dark: #050505;
+            --panel-bg: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            overflow-x: hidden;
+            margin: 0;
+        }
+
+        .mono { font-family: 'JetBrains Mono', monospace; }
+
+        /* Background Effects */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            filter: blur(1px);
+        }
+
+        .scanlines {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            pointer-events: none;
+            background: linear-gradient(
+                rgba(18, 16, 16, 0) 50%, 
+                rgba(0, 0, 0, 0.1) 50%
+            ), linear-gradient(
+                90deg, 
+                rgba(255, 0, 0, 0.02), 
+                rgba(0, 255, 0, 0.01), 
+                rgba(0, 0, 255, 0.02)
+            );
+            background-size: 100% 3px, 3px 100%;
+        }
+
+        /* Tactical UI Shapes */
+        .clipped {
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
+        }
+
+        .clipped-header {
+            clip-path: polygon(0 0, calc(100% - 40px) 0, 100% 40px, 100% 100%, 0 100%);
+        }
+
+        /* Animations */
+        @keyframes scan {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(100%); }
+        }
+
+        .scanner-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            animation: scan 4s linear infinite;
+            opacity: 0.3;
+        }
+
+        .glitch-text:hover {
+            text-shadow: 2px 0 var(--accent), -2px 0 #ff00c1;
+            animation: glitch 0.3s infinite;
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+
+        .card-hover:hover {
+            border-color: var(--accent);
+            background: rgba(0, 242, 255, 0.05);
+            transform: translateY(-5px);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--accent); }
+    </style>
+</head>
+<body>
+
+    <canvas id="bg-canvas"></canvas>
+    <div class="scanlines"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-[1000] flex justify-between items-center px-10 py-6 border-b border-white/5 backdrop-blur-md">
+        <div class="flex items-center gap-4">
+            <div class="w-10 h-10 border-2 border-white flex items-center justify-center rotate-45 group hover:bg-white transition-all duration-300">
+                <span class="text-white group-hover:text-black -rotate-45 font-black text-xl">A</span>
+            </div>
+            <div class="flex flex-col">
+                <span class="text-xl font-black tracking-tighter leading-none">ALIMAGINE</span>
+                <span class="mono text-[8px] text-cyan-400 tracking-[0.4em]">SYSTEM_VERSION_3.0.4</span>
+            </div>
+        </div>
+        <div class="hidden md:flex gap-10 mono text-[10px] tracking-[0.3em] font-bold">
+            <a href="#home" class="hover:text-cyan-400 transition-colors uppercase">Home</a>
+            <a href="#projects" class="hover:text-cyan-400 transition-colors uppercase">Projects</a>
+            <a href="#briefing" class="hover:text-cyan-400 transition-colors uppercase">Briefing</a>
+            <a href="#contact" class="hover:text-cyan-400 transition-colors uppercase">Contact</a>
+        </div>
+        <button class="px-6 py-2 border border-white/20 hover:border-cyan-400 hover:text-cyan-400 transition-all mono text-[10px]">
+            LOG_IN
+        </button>
+    </nav>
+
+    <!-- Sidebar Info -->
+    <div class="fixed left-6 bottom-10 z-50 vertical-text hidden lg:block">
+        <div class="flex flex-col gap-6 items-center">
+            <div class="w-[1px] h-20 bg-white/20"></div>
+            <span class="mono text-[10px] text-white/30 tracking-[0.5em] rotate-180" style="writing-mode: vertical-rl;">LATENCY: 14MS</span>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative min-h-screen flex flex-col justify-center px-10 lg:px-32">
+        <div class="absolute right-0 top-0 w-1/2 h-full bg-gradient-to-l from-cyan-500/5 to-transparent pointer-events-none"></div>
+        
+        <div class="z-10 max-w-4xl space-y-8">
+            <div class="flex items-center gap-4">
+                <div class="h-[1px] w-12 bg-cyan-400"></div>
+                <span class="mono text-xs text-cyan-400 tracking-[0.5em] uppercase">Tactical Deployment Initiated</span>
+            </div>
+
+            <h1 class="text-7xl md:text-9xl font-black tracking-tighter leading-none">
+                BEYOND <br>
+                <span class="glitch-text cursor-default">FRONTIERS</span>
+            </h1>
+
+            <p class="text-gray-400 text-lg md:text-xl max-w-2xl font-light leading-relaxed border-l-2 border-white/10 pl-8">
+                Kami membangun pengalaman imersif yang mengaburkan batas antara simulasi militer, narasi futuristik, dan realitas digital. Selamat datang di Alimagine.
+            </p>
+
+            <div class="flex flex-wrap gap-6 pt-10">
+                <button class="clipped px-12 py-5 bg-white text-black font-black uppercase tracking-widest hover:bg-cyan-400 transition-all transform hover:-translate-y-1">
+                    Initialize Protocol
+                </button>
+                <button class="clipped px-12 py-5 bg-transparent border border-white/20 font-black uppercase tracking-widest hover:bg-white/5 transition-all">
+                    System Specs
+                </button>
+            </div>
+        </div>
+
+        <div class="absolute right-10 bottom-20 hidden lg:block">
+            <div class="mono text-[10px] text-right space-y-2 opacity-40">
+                <p>COORD: 6.2088° S, 106.8456° E</p>
+                <p>STATUS: OPERATIONAL</p>
+                <p>DEPT: R&D_IMAGINATION_LABS</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-32 px-10 lg:px-32 relative">
+        <div class="flex justify-between items-end mb-20">
+            <div>
+                <span class="mono text-cyan-400 text-xs tracking-[0.5em]">OPERATIONAL_DATA</span>
+                <h2 class="text-5xl font-black mt-4 uppercase">Project Vault</h2>
+            </div>
+            <div class="mono text-[10px] text-white/40">TOTAL_RECORDS: 003</div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Project 1 -->
+            <div class="clipped-header bg-zinc-900/40 border border-white/10 p-1 card-hover transition-all cursor-pointer">
+                <div class="bg-zinc-900 p-8 h-full flex flex-col justify-between min-h-[400px]">
+                    <div class="scanner-line"></div>
+                    <div>
+                        <div class="flex justify-between items-start mb-10">
+                            <span class="mono text-[10px] border border-cyan-400 text-cyan-400 px-2 py-1">ENDFIELD_STYLIZED</span>
+                            <span class="mono text-[10px] text-white/30">ID: AE-01</span>
+                        </div>
+                        <h3 class="text-3xl font-bold mb-4">AETHER REACH</h3>
+                        <p class="text-sm text-gray-500 font-light">Eksplorasi planet tandus dengan mekanik tactical base building.</p>
+                    </div>
+                    <div class="flex items-center gap-2 text-cyan-400 mono text-xs pt-10 group-hover:gap-4 transition-all">
+                        DEPLOY_MISSION <span class="text-lg">→</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project 2 -->
+            <div class="clipped-header bg-zinc-900/40 border border-white/10 p-1 card-hover transition-all cursor-pointer">
+                <div class="bg-zinc-900 p-8 h-full flex flex-col justify-between min-h-[400px]">
+                    <div>
+                        <div class="flex justify-between items-start mb-10">
+                            <span class="mono text-[10px] border border-white/20 text-white/40 px-2 py-1">COMBAT_SIM</span>
+                            <span class="mono text-[10px] text-white/30">ID: AE-02</span>
+                        </div>
+                        <h3 class="text-3xl font-bold mb-4">NEURAL SHIFT</h3>
+                        <p class="text-sm text-gray-500 font-light">High-speed hack-n-slash dengan sistem pergantian karakter instan.</p>
+                    </div>
+                    <div class="flex items-center gap-2 text-white mono text-xs pt-10">
+                        IN_DEVELOPMENT <span class="w-2 h-2 bg-white animate-pulse rounded-full"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project 3 -->
+            <div class="clipped-header bg-zinc-900/40 border border-white/10 p-1 card-hover transition-all cursor-pointer">
+                <div class="bg-zinc-900 p-8 h-full flex flex-col justify-between min-h-[400px]">
+                    <div>
+                        <div class="flex justify-between items-start mb-10">
+                            <span class="mono text-[10px] border border-white/20 text-white/40 px-2 py-1">NARRATIVE</span>
+                            <span class="mono text-[10px] text-white/30">ID: AE-03</span>
+                        </div>
+                        <h3 class="text-3xl font-bold mb-4">VOID ECHO</h3>
+                        <p class="text-sm text-gray-500 font-light">Cerita misteri di stasiun luar angkasa yang ditinggalkan.</p>
+                    </div>
+                    <div class="flex items-center gap-2 text-white mono text-xs pt-10">
+                        COMING_SOON <span class="text-lg">...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Footer -->
+    <footer class="py-20 px-10 lg:px-32 border-t border-white/5 bg-black/80 backdrop-blur-md">
+        <div class="flex flex-col md:flex-row justify-between gap-16">
+            <div class="max-w-md">
+                <h2 class="text-3xl font-black mb-6">ALIMAGINE_</h2>
+                <p class="text-gray-500 text-sm mono leading-relaxed">
+                    LEVEL 4, DISTRICT_ZERO, VIRTUAL_HUB.<br>
+                    ALL DATA ENCRYPTED. UNAUTHORIZED ACCESS PROHIBITED.
+                </p>
+            </div>
+            <div class="grid grid-cols-2 gap-10 mono text-[10px] tracking-widest uppercase">
+                <div class="space-y-4">
+                    <p class="text-white/20">Protocol</p>
+                    <a href="#" class="block hover:text-cyan-400 transition-colors">Career</a>
+                    <a href="#" class="block hover:text-cyan-400 transition-colors">Privacy</a>
+                    <a href="#" class="block hover:text-cyan-400 transition-colors">Logs</a>
+                </div>
+                <div class="space-y-4">
+                    <p class="text-white/20">Social</p>
+                    <a href="#" class="block hover:text-cyan-400 transition-colors">Neural_Link</a>
+                    <a href="#" class="block hover:text-cyan-400 transition-colors">Twitter</a>
+                    <a href="#" class="block hover:text-cyan-400 transition-colors">Discord</a>
+                </div>
+            </div>
+        </div>
+        <div class="mt-20 pt-10 border-t border-white/5 text-center">
+            <span class="mono text-[8px] text-white/20">ALIMAGINE_STUDIO // AUTH_USER_2025 // NO_REPRODUCTION_WITHOUT_CONSENT</span>
+        </div>
+    </footer>
+
+    <script>
+        // --- BACKGROUND PARTICLE SYSTEM & PARALLAX ---
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let particles = [];
+        let mouse = { x: null, y: null };
+
+        function initCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            particles = [];
+            
+            // Create particles (Floating Digital Dust)
+            for (let i = 0; i < 150; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 2,
+                    speedX: (Math.random() - 0.5) * 0.5,
+                    speedY: (Math.random() - 0.5) * 0.5,
+                    opacity: Math.random() * 0.5
+                });
+            }
+        }
+
+        window.addEventListener('resize', initCanvas);
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+
+        function drawBackground() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw Grid
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
+            ctx.lineWidth = 1;
+            const gridSize = 60;
+            const offsetX = (mouse.x - canvas.width / 2) * 0.02;
+            const offsetY = (mouse.y - canvas.height / 2) * 0.02;
+
+            for (let x = offsetX % gridSize; x < canvas.width; x += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+            for (let y = offsetY % gridSize; y < canvas.height; y += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+
+            // Draw Particles
+            particles.forEach(p => {
+                ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity})`;
+                
+                // Add parallax to particles
+                const pX = p.x + (mouse.x - canvas.width / 2) * (p.size * 0.01);
+                const pY = p.y + (mouse.y - canvas.height / 2) * (p.size * 0.01);
+
+                ctx.beginPath();
+                ctx.arc(pX, pY, p.size, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Update original position for subtle movement
+                p.x += p.speedX;
+                p.y += p.speedY;
+
+                if (p.x > canvas.width) p.x = 0;
+                if (p.x < 0) p.x = canvas.width;
+                if (p.y > canvas.height) p.y = 0;
+                if (p.y < 0) p.y = canvas.height;
+            });
+
+            requestAnimationFrame(drawBackground);
+        }
+
+        initCanvas();
+        drawBackground();
+
+        // Reveal animations on scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('section > div').forEach(div => {
+            div.style.opacity = '0';
+            div.style.transform = 'translateY(30px)';
+            div.style.transition = 'all 1s cubic-bezier(0.16, 1, 0.3, 1)';
+            observer.observe(div);
+        });
+
+    </script>
+</body>
+</html>
