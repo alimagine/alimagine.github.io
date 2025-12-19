@@ -3,17 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ALIMAGINE | Open Source Hub</title>
+    <title>ALIMAGINE | Developer & Creator Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=JetBrains+Mono:wght@100;400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=JetBrains+Mono:wght@100;400&display=swap');
 
         :root {
             --accent: #FFB800;
+            --bg: #FAFAFA;
+            --text: #121212;
+            --panel: rgba(255, 255, 255, 0.8);
+            --border: rgba(0, 0, 0, 0.08);
+            --subtle: rgba(0, 0, 0, 0.02);
+            --text-muted: #64748b;
+            --card-hover-bg: #FFFFFF;
+        }
+
+        [data-theme="dark"] {
             --bg: #0A0A0A;
-            --text: #EDEDED;
-            --panel: rgba(20, 20, 20, 0.8);
-            --border: rgba(255, 184, 0, 0.15);
+            --text: #F8FAFC;
+            --panel: rgba(15, 15, 15, 0.85);
+            --border: rgba(255, 184, 0, 0.12);
+            --subtle: rgba(255, 255, 255, 0.02);
+            --text-muted: #94a3b8;
+            --card-hover-bg: #111111;
         }
 
         body {
@@ -22,6 +35,8 @@
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
             margin: 0;
+            transition: background-color 0.4s ease, color 0.4s ease;
+            line-height: 1.6;
         }
 
         .mono { font-family: 'JetBrains Mono', monospace; }
@@ -33,22 +48,24 @@
             background-image: 
                 linear-gradient(var(--border) 1px, transparent 1px),
                 linear-gradient(90deg, var(--border) 1px, transparent 1px);
-            background-size: 40px 40px;
+            background-size: 50px 50px;
             z-index: -1;
-            opacity: 0.2;
+            opacity: 0.4;
             pointer-events: none;
         }
 
+        /* Scanline Anim */
         .scanline {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            height: 2px;
-            background: rgba(255, 184, 0, 0.1);
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
             z-index: 1000;
             pointer-events: none;
-            animation: scan 8s linear infinite;
+            opacity: 0.1;
+            animation: scan 10s linear infinite;
         }
 
         @keyframes scan {
@@ -56,232 +73,337 @@
             100% { transform: translateY(100vh); }
         }
 
-        /* Repo Card Style */
-        .repo-card {
+        /* Tactical Card Shapes */
+        .hub-card {
             background: var(--panel);
             border: 1px solid var(--border);
-            backdrop-filter: blur(10px);
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%);
+            backdrop-filter: blur(12px);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
         }
 
-        .repo-card:hover {
+        .hub-card:hover {
             border-color: var(--accent);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(255, 184, 0, 0.1);
+            background: var(--card-hover-bg);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
         }
+
+        .hub-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 0;
+            background: var(--accent);
+            transition: height 0.3s ease;
+        }
+        .hub-card:hover::after { height: 40px; }
 
         .badge {
-            font-size: 9px;
-            padding: 2px 8px;
-            border: 1px solid var(--accent);
+            font-size: 10px;
+            padding: 2px 10px;
+            background: rgba(255, 184, 0, 0.1);
+            border: 1px solid rgba(255, 184, 0, 0.3);
             color: var(--accent);
             font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
             text-transform: uppercase;
         }
 
-        /* Glitch Effect on Title */
-        .glitch-hover:hover {
-            animation: glitch 0.3s cubic-bezier(.25,.46,.45,.94) both infinite;
-        }
-
-        @keyframes glitch {
-            0% { transform: translate(0); }
-            25% { transform: translate(-2px, 2px); }
-            50% { transform: translate(2px, -2px); }
-            75% { transform: translate(-2px, -1px); }
-            100% { transform: translate(0); }
-        }
-
-        .btn-outline {
-            border: 1px solid var(--border);
-            padding: 0.75rem 1.5rem;
-            font-size: 10px;
+        .btn-main {
+            background: var(--text);
+            color: var(--bg);
+            padding: 0.9rem 2rem;
+            font-size: 11px;
+            font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.2em;
             transition: all 0.3s ease;
+            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
         }
 
-        .btn-outline:hover {
+        .btn-main:hover {
+            background: var(--accent);
+            color: #000;
+            transform: scale(1.05);
+        }
+
+        .theme-toggle {
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        .theme-toggle:hover {
             background: var(--accent);
             color: #000;
             border-color: var(--accent);
         }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
 </head>
-<body>
+<body data-theme="light">
 
     <div class="grid-bg"></div>
     <div class="scanline"></div>
 
-    <!-- Nav -->
-    <nav class="sticky top-0 z-[100] border-b border-white/5 bg-black/50 backdrop-blur-md">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <svg viewBox="0 0 100 100" class="w-8 h-8 fill-current text-[#FFB800]">
-                    <path d="M45,50 L10,30 L30,45 L15,55 L45,60 Z" />
-                    <path d="M55,50 L90,30 L70,45 L85,55 L55,60 Z" />
-                    <path d="M48,10 L52,10 L55,75 L50,95 L45,75 Z" />
-                </svg>
-                <span class="font-black tracking-tighter text-xl">ALIMAGINE // DEV</span>
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-[100] border-b border-black/5 bg-[var(--panel)] backdrop-blur-lg">
+        <div class="container mx-auto px-6 md:px-12 py-5 flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <div class="w-10 h-10 flex items-center justify-center">
+                    <svg viewBox="0 0 100 100" class="w-full h-full fill-current text-[#FFB800]">
+                        <path d="M45,50 L10,30 L30,45 L15,55 L45,60 Z" />
+                        <path d="M55,50 L90,30 L70,45 L85,55 L55,60 Z" />
+                        <path d="M48,10 L52,10 L55,75 L50,95 L45,75 Z" />
+                    </svg>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-black tracking-tighter text-xl uppercase">Alimagine</span>
+                    <span class="mono text-[9px] tracking-[0.4em] opacity-40 uppercase">Creator_Hub</span>
+                </div>
             </div>
-            <div class="hidden md:flex gap-8 mono text-[10px] tracking-widest">
-                <a href="https://alimagine.github.io" class="hover:text-[#FFB800] transition-colors">MAIN_SITE</a>
-                <a href="https://github.com/alimagine" class="hover:text-[#FFB800] transition-colors">GITHUB_PROFILE</a>
+            
+            <div class="flex items-center gap-4 md:gap-8">
+                <div class="hidden lg:flex gap-10 mono text-[10px] tracking-widest font-bold">
+                    <a href="https://alimagine.github.io" class="hover:text-[#FFB800] transition-colors uppercase">Studio</a>
+                    <a href="https://github.com/alimagine" class="hover:text-[#FFB800] transition-colors uppercase">GitHub</a>
+                </div>
+                <div class="h-6 w-[1px] bg-black/10 hidden lg:block"></div>
+                <button id="theme-toggle" class="theme-toggle" title="Switch Theme">
+                    <svg id="theme-icon" class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                        <path id="sun-path" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"></path>
+                        <path id="moon-path" class="hidden" d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                    </svg>
+                </button>
             </div>
         </div>
     </nav>
 
-    <main class="container mx-auto px-6 py-20">
+    <main class="container mx-auto px-6 md:px-12 py-24">
         <!-- Hero Section -->
-        <header class="max-w-4xl mb-32">
-            <div class="flex items-center gap-4 mb-6">
-                <div class="w-12 h-[1px] bg-[#FFB800]"></div>
-                <span class="mono text-xs text-[#FFB800] tracking-[0.4em]">OPEN_SOURCE_REPOSITORY</span>
+        <header class="max-w-4xl mb-32 reveal">
+            <div class="flex items-center gap-4 mb-8">
+                <div class="w-16 h-[2px] bg-[#FFB800]"></div>
+                <span class="mono text-xs text-[#FFB800] tracking-[0.5em] font-bold uppercase">The Developer Arsenal</span>
             </div>
-            <h1 class="text-6xl md:text-8xl font-black tracking-tighter mb-8 leading-none">BUILDING <br> THE <span class="italic text-transparent" style="-webkit-text-stroke: 1px #FFB800;">CORE</span></h1>
-            <p class="text-zinc-500 text-lg md:text-xl font-light max-w-2xl leading-relaxed mb-10">
-                A sanctuary for technical blueprints, core engines, and experimental scripts developed by Alimagine Studio. We believe in sharing the tools that shape the future of gaming.
+            <h1 class="text-6xl md:text-8xl lg:text-[10rem] font-black tracking-tighter mb-10 leading-[0.8] uppercase">
+                Open <br> <span class="italic text-transparent" style="-webkit-text-stroke: 1.5px var(--text);">Ecosystem</span>
+            </h1>
+            <p class="text-[var(--text-muted)] text-lg md:text-2xl font-light max-w-3xl leading-relaxed mb-12">
+                Welcome to Alimagine's technical hearth. We share our assets, documentation, and logic to empower the next generation of digital architects.
             </p>
-            <div class="flex gap-4">
-                <a href="https://alimagine.github.io" class="btn-outline font-bold">Back to Main Site</a>
+            <div class="flex flex-wrap gap-6">
+                <a href="https://alimagine.github.io" class="btn-main">Return to Studio</a>
+                <a href="#hub" class="px-8 py-4 border border-[var(--border)] text-[10px] font-bold tracking-[0.3em] uppercase hover:bg-[var(--subtle)] transition-all">Explore Hub</a>
             </div>
         </header>
 
-        <!-- Spotlight Section (Dev-Note) -->
-        <section class="mb-32">
-            <div class="mb-12 flex items-center justify-between">
-                <h2 class="text-3xl font-black uppercase tracking-tight">System Documentation</h2>
-                <div class="mono text-[10px] opacity-30 uppercase">Priority_One</div>
+        <!-- Spotlight: Dev-Note (Documentation & Guides) -->
+        <section class="mb-40 reveal">
+            <div class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-4">
+                <div>
+                    <span class="mono text-[10px] text-zinc-400 tracking-[0.5em] uppercase mb-2 block">Knowledge_Base</span>
+                    <h2 class="text-4xl font-black uppercase tracking-tight">Development Logs</h2>
+                </div>
+                <div class="h-[1px] flex-grow bg-[var(--border)] mx-10 hidden lg:block"></div>
+                <span class="mono text-[10px] text-[#FFB800]">CORE_ACCESS: GRANTED</span>
             </div>
             
             <a href="https://alimagine.github.io/Dev-Note" class="block group">
-                <div class="repo-card p-8 md:p-12 flex flex-col md:flex-row gap-10 items-center border-[#FFB800]/40 bg-[#FFB800]/5">
-                    <div class="flex-shrink-0 w-24 h-24 border border-[#FFB800] flex items-center justify-center group-hover:bg-[#FFB800] transition-all">
-                        <span class="text-3xl font-black group-hover:text-black">DN</span>
+                <div class="hub-card p-10 md:p-16 flex flex-col lg:flex-row gap-12 items-center">
+                    <div class="w-32 h-32 md:w-44 md:h-44 bg-[var(--text)] flex flex-col items-center justify-center transition-all duration-500 group-hover:bg-[#FFB800] group-hover:rotate-6">
+                        <span class="text-4xl md:text-5xl font-black text-[var(--bg)] group-hover:text-black uppercase">Note</span>
                     </div>
-                    <div class="flex-grow space-y-4">
-                        <div class="flex items-center gap-4">
-                            <span class="badge">Active Documentation</span>
-                            <span class="mono text-[10px] opacity-40">REPO: DEV-NOTE</span>
+                    
+                    <div class="flex-grow space-y-6 text-center lg:text-left">
+                        <div class="flex flex-wrap justify-center lg:justify-start gap-4">
+                            <span class="badge">Research & Methodology</span>
+                            <span class="mono text-[10px] opacity-40 uppercase">v2025 // Live Archive</span>
                         </div>
-                        <h3 class="text-4xl font-black tracking-tighter group-hover:text-[#FFB800] transition-colors">ALIMAGINE_DEV_NOTE</h3>
-                        <p class="text-zinc-400 font-light max-w-xl">
-                            The central archive for development logs, technical architecture, and research notes. Updated regularly as we push the boundaries of "Void Reach Protocol".
+                        <h3 class="text-4xl md:text-5xl font-black tracking-tighter group-hover:text-[#FFB800] transition-colors uppercase">Alimagine_Dev_Note</h3>
+                        <p class="text-[var(--text-muted)] text-lg font-light max-w-2xl">
+                            Our public brain. Deep dives into game feel, technical art, and the specific mechanics that define our studio's signature experience.
                         </p>
                     </div>
-                    <div class="flex-shrink-0">
-                        <div class="w-12 h-12 rounded-full border border-[#FFB800] flex items-center justify-center group-hover:scale-110 transition-transform">
-                            <span class="text-xl">→</span>
-                        </div>
+                    
+                    <div class="hidden lg:flex items-center justify-center w-24 h-24 rounded-full border border-[var(--border)] group-hover:border-[#FFB800] group-hover:bg-[#FFB800] group-hover:text-black transition-all duration-500">
+                        <span class="text-3xl">→</span>
                     </div>
                 </div>
             </a>
         </section>
 
-        <!-- Repository List -->
-        <section>
-            <div class="mb-12">
-                <h2 class="text-3xl font-black uppercase tracking-tight">Public Repositories</h2>
-                <div class="h-[1px] w-20 bg-[#FFB800] mt-4"></div>
+        <!-- Hub Grid -->
+        <section id="hub" class="reveal">
+            <div class="mb-16">
+                <h2 class="text-4xl font-black uppercase tracking-tight">The Creator's Arsenal</h2>
+                <div class="w-24 h-1 bg-[#FFB800] mt-6"></div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Repo 1 -->
-                <div class="repo-card p-8 group">
-                    <div class="flex justify-between items-start mb-8">
-                        <span class="badge">Library</span>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Category 1: Frameworks -->
+                <div class="hub-card p-10 group">
+                    <div class="flex justify-between items-start mb-10">
                         <div class="flex gap-2">
-                            <div class="w-1.5 h-1.5 rounded-full bg-[#FFB800]"></div>
-                            <div class="w-1.5 h-1.5 rounded-full bg-white/10"></div>
+                            <div class="w-2 h-2 rounded-full bg-[#FFB800] animate-pulse"></div>
+                            <span class="badge">Frameworks</span>
                         </div>
+                        <span class="mono text-[9px] opacity-30">TECH_BASE</span>
                     </div>
-                    <h3 class="text-2xl font-black mb-4 group-hover:text-[#FFB800] transition-colors uppercase">Aether-Core</h3>
-                    <p class="text-xs text-zinc-500 font-light leading-relaxed mb-10">High-performance physics handler for atmospheric rendering and celestial movement.</p>
-                    <div class="flex justify-between items-center mono text-[9px] tracking-widest opacity-40 uppercase">
-                        <span>C++ // HLSL</span>
-                        <a href="#" class="hover:text-[#FFB800]">View_Src</a>
+                    <h3 class="text-2xl font-black mb-6 group-hover:text-[#FFB800] transition-colors uppercase">Aether_Logic</h3>
+                    <p class="text-sm text-[var(--text-muted)] font-light leading-relaxed mb-12 min-h-[60px]">Core logic and math libraries for procedural generation and deterministic physics.</p>
+                    <div class="pt-6 border-t border-[var(--border)] flex justify-between items-center mono text-[10px] tracking-widest uppercase">
+                        <span class="text-zinc-400">Logic & Math</span>
+                        <a href="https://github.com/alimagine" class="text-[#FFB800] font-bold hover:underline">View_Repo</a>
                     </div>
                 </div>
 
-                <!-- Repo 2 -->
-                <div class="repo-card p-8 group">
-                    <div class="flex justify-between items-start mb-8">
-                        <span class="badge">Tooling</span>
+                <!-- Category 2: Visual Assets -->
+                <div class="hub-card p-10 group">
+                    <div class="flex justify-between items-start mb-10">
                         <div class="flex gap-2">
-                            <div class="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
+                            <div class="w-2 h-2 rounded-full bg-cyan-500"></div>
+                            <span class="badge">Visuals</span>
                         </div>
+                        <span class="mono text-[9px] opacity-30">ASSET_KIT</span>
                     </div>
-                    <h3 class="text-2xl font-black mb-4 group-hover:text-[#FFB800] transition-colors uppercase">Tactical-UI-Kit</h3>
-                    <p class="text-xs text-zinc-500 font-light leading-relaxed mb-10">Modular components for building immersive in-game interfaces and heads-up displays.</p>
-                    <div class="flex justify-between items-center mono text-[9px] tracking-widest opacity-40 uppercase">
-                        <span>TypeScript // React</span>
-                        <a href="#" class="hover:text-[#FFB800]">View_Src</a>
+                    <h3 class="text-2xl font-black mb-6 group-hover:text-[#FFB800] transition-colors uppercase">Prism_Shaders</h3>
+                    <p class="text-sm text-[var(--text-muted)] font-light leading-relaxed mb-12 min-h-[60px]">Open collection of HLSL and GLSL shaders for ethereal lighting and atmospheric effects.</p>
+                    <div class="pt-6 border-t border-[var(--border)] flex justify-between items-center mono text-[10px] tracking-widest uppercase">
+                        <span class="text-zinc-400">Materials</span>
+                        <a href="https://github.com/alimagine" class="text-[#FFB800] font-bold hover:underline">Download</a>
                     </div>
                 </div>
 
-                <!-- Repo 3 -->
-                <div class="repo-card p-8 group">
-                    <div class="flex justify-between items-start mb-8">
-                        <span class="badge">Script</span>
+                <!-- Category 3: UI/UX -->
+                <div class="hub-card p-10 group">
+                    <div class="flex justify-between items-start mb-10">
                         <div class="flex gap-2">
-                            <div class="w-1.5 h-1.5 rounded-full bg-green-500"></div>
+                            <div class="w-2 h-2 rounded-full bg-rose-500"></div>
+                            <span class="badge">Design</span>
                         </div>
+                        <span class="mono text-[9px] opacity-30">UI_RESOURCES</span>
                     </div>
-                    <h3 class="text-2xl font-black mb-4 group-hover:text-[#FFB800] transition-colors uppercase">Neural-Link-JS</h3>
-                    <p class="text-xs text-zinc-500 font-light leading-relaxed mb-10">Lightweight bridge for real-time data streaming between game engines and web terminals.</p>
-                    <div class="flex justify-between items-center mono text-[9px] tracking-widest opacity-40 uppercase">
-                        <span>JavaScript</span>
-                        <a href="#" class="hover:text-[#FFB800]">View_Src</a>
+                    <h3 class="text-2xl font-black mb-6 group-hover:text-[#FFB800] transition-colors uppercase">Tactical_UI_Kit</h3>
+                    <p class="text-sm text-[var(--text-muted)] font-light leading-relaxed mb-12 min-h-[60px]">Pre-built components and design tokens for building high-fidelity tactical interfaces.</p>
+                    <div class="pt-6 border-t border-[var(--border)] flex justify-between items-center mono text-[10px] tracking-widest uppercase">
+                        <span class="text-zinc-400">Design System</span>
+                        <a href="https://github.com/alimagine" class="text-[#FFB800] font-bold hover:underline">Figma_Link</a>
                     </div>
                 </div>
+            </div>
+        </section>
+
+        <!-- Community Section -->
+        <section class="mt-40 reveal text-center border-t border-[var(--border)] pt-24">
+            <h2 class="text-4xl md:text-6xl font-black uppercase tracking-tighter mb-8">Collaborate with Us</h2>
+            <p class="text-[var(--text-muted)] text-lg max-w-2xl mx-auto mb-12 font-light">
+                Whether you are a developer, an artist, or a theorist, our ecosystem thrives on shared vision. Join our GitHub organization or follow our dev-logs.
+            </p>
+            <div class="flex justify-center gap-4">
+                <a href="https://github.com/alimagine" class="btn-main">Join GitHub Organization</a>
             </div>
         </section>
     </main>
 
     <!-- Footer -->
-    <footer class="border-t border-white/5 py-20 bg-black/50">
-        <div class="container mx-auto px-6 text-center">
-            <div class="flex flex-col items-center gap-8">
-                <div class="w-10 h-10">
-                    <svg viewBox="0 0 100 100" class="fill-current text-[#FFB800] opacity-40">
-                        <path d="M48,10 L52,10 L55,75 L50,95 L45,75 Z" />
-                    </svg>
+    <footer class="border-t border-black/5 py-24 bg-[var(--subtle)]">
+        <div class="container mx-auto px-6 md:px-12">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-12">
+                <div class="flex flex-col items-center md:items-start gap-6 text-center md:text-left">
+                    <div class="w-12 h-12 flex items-center justify-center">
+                        <svg viewBox="0 0 100 100" class="w-full h-full fill-current text-[#FFB800] opacity-50">
+                            <path d="M48,10 L52,10 L55,75 L50,95 L45,75 Z" />
+                        </svg>
+                    </div>
+                    <div class="space-y-2">
+                        <h4 class="font-black tracking-tighter text-xl uppercase">Alimagine_Creator_Hub</h4>
+                        <p class="text-xs text-[var(--text-muted)] mono uppercase tracking-widest">A Part of Alimagine Network // 2025</p>
+                    </div>
                 </div>
-                <div class="space-y-2">
-                    <p class="mono text-[10px] tracking-[0.5em] text-zinc-500 uppercase">ALIMAGINE_NETWORK // GITHUB_HUB</p>
-                    <p class="text-xs text-zinc-600">Secure connection confirmed. All public data released under MIT License.</p>
+                
+                <div class="flex flex-wrap justify-center gap-12 mono text-[10px] font-bold uppercase tracking-widest">
+                    <a href="https://alimagine.github.io" class="hover:text-[#FFB800] transition-colors">Portal</a>
+                    <a href="https://github.com/alimagine" class="hover:text-[#FFB800] transition-colors">GitHub</a>
+                    <a href="https://alimagine.github.io/Dev-Note" class="hover:text-[#FFB800] transition-colors">Logs</a>
                 </div>
-                <div class="flex gap-8 mono text-[9px] uppercase tracking-widest text-zinc-400">
-                    <a href="https://alimagine.github.io" class="hover:text-[#FFB800]">Portal</a>
-                    <a href="#" class="hover:text-[#FFB800]">License</a>
-                    <a href="#" class="hover:text-[#FFB800]">Contributing</a>
-                </div>
+            </div>
+            
+            <div class="mt-20 pt-10 border-t border-black/5 text-center">
+                <span class="mono text-[9px] text-zinc-400 tracking-[0.5em] uppercase">Built for the Community // License: MIT & Creative Commons</span>
             </div>
         </div>
     </footer>
 
     <script>
-        // Reveal elements on scroll
-        const observerOptions = {
-            threshold: 0.1
-        };
+        // --- Theme Engine ---
+        const themeToggle = document.getElementById('theme-toggle');
+        const sunPath = document.getElementById('sun-path');
+        const moonPath = document.getElementById('moon-path');
+        const body = document.body;
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = "1";
-                    entry.target.style.transform = "translateY(0)";
+        function setTheme(theme) {
+            body.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            if (theme === 'dark') {
+                sunPath.classList.add('hidden');
+                moonPath.classList.remove('hidden');
+            } else {
+                sunPath.classList.remove('hidden');
+                moonPath.classList.add('hidden');
+            }
+        }
+
+        const savedTheme = localStorage.getItem('theme');
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+        if (savedTheme) {
+            setTheme(savedTheme);
+        } else if (systemPrefersDark) {
+            setTheme('dark');
+        } else {
+            setTheme('light');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = body.getAttribute('data-theme');
+            setTheme(currentTheme === 'light' ? 'dark' : 'light');
+        });
+
+        // --- Reveal Engine ---
+        const reveal = () => {
+            const reveals = document.querySelectorAll('.reveal');
+            reveals.forEach(el => {
+                const windowHeight = window.innerHeight;
+                const revealTop = el.getBoundingClientRect().top;
+                const revealPoint = 80;
+                if (revealTop < windowHeight - revealPoint) {
+                    el.classList.add('active');
                 }
             });
-        }, observerOptions);
+        };
 
-        document.querySelectorAll('.repo-card, header').forEach(el => {
-            el.style.opacity = "0";
-            el.style.transform = "translateY(30px)";
-            el.style.transition = "all 1s cubic-bezier(0.16, 1, 0.3, 1)";
-            observer.observe(el);
-        });
+        window.addEventListener('scroll', reveal);
+        window.addEventListener('load', reveal);
+        reveal();
     </script>
 </body>
 </html>
